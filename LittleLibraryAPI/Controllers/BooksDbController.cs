@@ -1,4 +1,5 @@
-﻿using LittleLibraryAPI.Models;
+﻿using LittleLibraryAPI.Entities;
+using LittleLibraryAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ namespace LittleLibraryAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBook(int id)
         {
-            var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.id == id);
+            var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.Id == id);
             if (book == null)
             {
                 return NotFound();
@@ -39,13 +40,13 @@ namespace LittleLibraryAPI.Controllers
         {
             _dbContext.Books.Add(book);
             await _dbContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetBook), new { id = book.id }, book);
+            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> PutBook(int id, Book updatedBook)
         {
-            if (id != updatedBook.id)
+            if (id != updatedBook.Id)
             {
                 return BadRequest();
             }
@@ -72,13 +73,13 @@ namespace LittleLibraryAPI.Controllers
 
         private bool BookExists(int id)
         {
-            return _dbContext.Books.Any(b => b.id == id);
+            return _dbContext.Books.Any(b => b.Id == id);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteBook(int id)
         {
-            var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.id == id);
+            var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.Id == id);
             if (book == null)
             {
                 return NotFound();

@@ -1,4 +1,5 @@
-﻿using LittleLibraryAPI.Models;
+﻿using LittleLibraryAPI.Entities;
+using LittleLibraryAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ namespace LittleLibraryAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Quote>> GetQuote(int id)
         {
-            var quote = await _dbContext.Quotes.FirstOrDefaultAsync(q => q.id == id);
+            var quote = await _dbContext.Quotes.FirstOrDefaultAsync(q => q.Id == id);
             if (quote == null)
             {
                 return NotFound();
@@ -39,13 +40,13 @@ namespace LittleLibraryAPI.Controllers
         {
             _dbContext.Quotes.Add(quote);
             await _dbContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetQuote), new { id = quote.id }, quote);
+            return CreatedAtAction(nameof(GetQuote), new { id = quote.Id }, quote);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> PutQuote(int id, Quote updatedQuote)
         {
-            if (id != updatedQuote.id)
+            if (id != updatedQuote.Id)
             {
                 return BadRequest();
             }
@@ -70,14 +71,14 @@ namespace LittleLibraryAPI.Controllers
 
         private bool QuoteExists(int id)
         {
-            return _dbContext.Quotes.Any(q => q.id == id);
+            return _dbContext.Quotes.Any(q => q.Id == id);
         }
     
 
     [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteQuote(int id)
         {
-            var quote = await _dbContext.Quotes.FirstOrDefaultAsync(q => q.id == id);
+            var quote = await _dbContext.Quotes.FirstOrDefaultAsync(q => q.Id == id);
             if (quote == null)
             {
                 return NotFound();
