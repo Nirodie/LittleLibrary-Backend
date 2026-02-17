@@ -1,0 +1,91 @@
+﻿using LittleLibraryAPI.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace LittleLibraryAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BooksDbController : ControllerBase
+    {
+        private readonly BooksDbContext _dbContext;
+
+        public BooksDbController(BooksDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+        {
+            var books = await _dbContext.Books.ToListAsync();
+            return Ok(books);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Book>> GetBook(int id)
+        {
+            var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.id == id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            return Ok(book);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Book>> PostBook(Book book)
+        {
+            _dbContext.Books.Add(book);
+            await _dbContext.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetBook), new { id = book.id }, book);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutBook(int id, Book updatedBook)
+        {
+            if (id != updatedBook.id)
+            {
+                return BadRequest();
+            }
+            _dbContext.Entry(updatedBook).State = EntityState.Modified;
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BookExists(id))
+                {
+                    return NotFound();
+
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            
+            return NoContent();
+        }
+
+        private bool BookExists(int id)
+        {
+            return _dbContext.Books.Any(b => b.id == id);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteBook(int id)
+        {
+            var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.id == id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            _dbContext.Books.Remove(book);
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
+    }
+}
