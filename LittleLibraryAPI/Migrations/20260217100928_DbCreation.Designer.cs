@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LittleLibraryAPI.Migrations
 {
-    [DbContext(typeof(BooksDbContext))]
+    [DbContext(typeof(LibraryDbContext))]
     [Migration("20260217100928_DbCreation")]
     partial class DbCreation
     {

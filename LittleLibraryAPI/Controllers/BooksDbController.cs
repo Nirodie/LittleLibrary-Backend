@@ -9,9 +9,9 @@ namespace LittleLibraryAPI.Controllers
     [ApiController]
     public class BooksDbController : ControllerBase
     {
-        private readonly BooksDbContext _dbContext;
+        private readonly LibraryDbContext _dbContext;
 
-        public BooksDbController(BooksDbContext dbContext)
+        public BooksDbController(LibraryDbContext dbContext)
         {
             _dbContext = dbContext;
         }
