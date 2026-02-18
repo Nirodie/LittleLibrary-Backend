@@ -6,7 +6,20 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
 
+var AllowedOrigins = "_allowedOrigins";
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowedOrigins,
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7282",
+                "http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 // Add services to the container.
 builder.Services.AddDbContext<LibraryDbContext>(options =>
@@ -47,6 +60,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(AllowedOrigins);
 
 app.UseAuthorization();
 

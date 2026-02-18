@@ -30,13 +30,16 @@ namespace LittleLibraryAPI.Controllers
     
 
     [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<ActionResult<LoginDto>> Login(UserDto request)
         {
             var token = await authService.LoginAsync(request);
-            if (token is null)
-                return BadRequest("Invalid username or password.");
 
-            return Ok(token);
+            if (token is null)
+            {
+                return BadRequest(new LoginDto { Message = "Invalid username or password." });
+            }
+
+            return Ok(new LoginDto { Token = token });
         }
 
         [Authorize]
